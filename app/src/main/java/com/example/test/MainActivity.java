@@ -169,8 +169,13 @@ public class MainActivity extends AppCompatActivity {
 
     //设置回退页面
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-            webView.goBack();
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            new AlertDialog.Builder(this)
+                .setTitle("确认退出")
+                .setMessage("您确定要退出应用吗？")
+                .setPositiveButton("确定", (dialog, which) -> finish()) // 确定退出
+                .setNegativeButton("取消", null) // 取消关闭对话框
+                .show();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -256,34 +261,34 @@ public class MainActivity extends AppCompatActivity {
         // 启动前台服务
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         startService(serviceIntent);
-        
+
         // 启动双进程保活服务
         startService(new Intent(this, LocalService.class));
         startService(new Intent(this, RemoteService.class));
-        
+
         // 设置并启动 JobScheduler
         scheduleJob();
     }
-    
+
     private void scheduleJob() {
         ComponentName serviceComponent = new ComponentName(this, JobSchedulerService.class);
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, serviceComponent);
-        
+
         // 设置任务在网络可用时执行
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        
+
         // 设置任务在设备充电时执行
         builder.setRequiresCharging(true);
-        
+
         // 设置任务的最小延迟时间（3分钟）
         builder.setMinimumLatency(3 * 60 * 1000);
-        
+
         // 设置任务的最大延迟时间（10分钟）
         builder.setOverrideDeadline(10 * 60 * 1000);
-        
+
         // 设置在设备重启后是否继续执行
         builder.setPersisted(true);
-        
+
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
             int resultCode = jobScheduler.schedule(builder.build());
