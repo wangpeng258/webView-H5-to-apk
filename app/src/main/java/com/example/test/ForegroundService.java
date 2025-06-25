@@ -22,8 +22,8 @@ public class ForegroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("App is running")
-                .setContentText("Your app is running in the background")
+                .setContentTitle("App正在运行")
+                .setContentText("你的应用程序在后台运行")
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build();
 
@@ -53,4 +53,4 @@ public class ForegroundService extends Service {
             }
         }
     }
-} 
+}
