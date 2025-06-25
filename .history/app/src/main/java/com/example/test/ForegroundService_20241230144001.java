@@ -1,5 +1,3 @@
-package com.example.test;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,14 +22,14 @@ public class ForegroundService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("App is running")
                 .setContentText("Your app is running in the background")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(R.drawable.ic_notification)
                 .build();
 
         startForeground(1, notification);
 
         // 如果需要，执行其他任务
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

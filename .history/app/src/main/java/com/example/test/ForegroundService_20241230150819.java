@@ -31,7 +31,7 @@ public class ForegroundService extends Service {
 
         // 如果需要，执行其他任务
 
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override
