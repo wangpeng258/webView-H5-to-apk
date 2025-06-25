@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        //该方法解决的问题是打开浏览器不调用系统浏览器，直接用 webView 打开
+        //该方法解决问题是打开浏览器不调用系统浏览器，直接用 webView 打开
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -167,11 +167,24 @@ public class MainActivity extends AppCompatActivity {
             "})()");
     }
 
+    private long exitTime = 0;
+
     //设置回退页面
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-            webView.goBack();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            } else {
+                if ((System.currentTimeMillis() - exitTime) > 2000) {
+                    showMessage("再按一次退出应用");
+                    exitTime = System.currentTimeMillis();
+                } else {
+                    finish();
+                }
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
