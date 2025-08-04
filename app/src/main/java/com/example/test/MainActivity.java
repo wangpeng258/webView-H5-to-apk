@@ -158,6 +158,12 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().getAllowFileAccessFromFileURLs();
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        // 设置缓存模式
+        // LOAD_DEFAULT ：根据cache-control决定是否从网络获取数据。
+        // LOAD_CACHE_ELSE_NETWORK ：只要本地有，无论是否过期、或no-cache，都使用缓存中的数据。
+        // LOAD_NO_CACHE ：不使用缓存，只从网络获取数据。
+        // LOAD_CACHE_ONLY ：不使用网络，只读取本地缓存数据。
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE); // 默认缓存模式
 
         startForegroundService();
 
@@ -269,34 +275,34 @@ public class MainActivity extends AppCompatActivity {
         // 启动前台服务
         Intent serviceIntent = new Intent(this, ForegroundService.class);
         startService(serviceIntent);
-        
+
         // 启动双进程保活服务
         startService(new Intent(this, LocalService.class));
         startService(new Intent(this, RemoteService.class));
-        
+
         // 设置并启动 JobScheduler
         scheduleJob();
     }
-    
+
     private void scheduleJob() {
         ComponentName serviceComponent = new ComponentName(this, JobSchedulerService.class);
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, serviceComponent);
-        
+
         // 设置任务在网络可用时执行
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
-        
+
         // 设置任务在设备充电时执行
         builder.setRequiresCharging(true);
-        
+
         // 设置任务的最小延迟时间（3分钟）
         builder.setMinimumLatency(3 * 60 * 1000);
-        
+
         // 设置任务的最大延迟时间（10分钟）
         builder.setOverrideDeadline(10 * 60 * 1000);
-        
+
         // 设置在设备重启后是否继续执行
         builder.setPersisted(true);
-        
+
         JobScheduler jobScheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (jobScheduler != null) {
             int resultCode = jobScheduler.schedule(builder.build());
